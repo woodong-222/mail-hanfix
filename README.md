@@ -39,7 +39,7 @@ macOS의 파일시스템 API가 파일명을 NFD 형태로 반환하기 때문�
 - https://mail.naver.com/ (@naver.com)
 - https://portal.koreatech.ac.kr/ (@koreatech.ac.kr)
 
-사용 추가 등록 요청 및 다른 되는 사이트 발견 시 ehddn2004@gmail.com 메일로 알려주시면 감사하겠습니다.
+위의 메일을 제외하고 추가 요청 및 작동되는 메일은 ehddn2004@gmail.com 으로 제보해주세요.
 
 ## 특정 사이트에서만 동작시키기
 
