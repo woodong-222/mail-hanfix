@@ -48,7 +48,7 @@ macOS의 파일시스템 API가 파일명을 NFD 형태로 반환하기 때문�
 ```json
 "content_scripts": [
   {
-    "matches": ["https://mail.yourcompany.com/*"],
+    "matches": ["https://mail.company.com/*"],
     ...
   }
 ]
