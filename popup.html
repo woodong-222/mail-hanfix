@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <h1>Koreatech HanFix</h1>
+        <p class="subtitle">한글 파일명 자소 분리 방지</p>
+      </div>
+      <div class="info">
+        <button class="info-button" aria-label="사용 안내" type="button">i</button>
+        <div class="info-tooltip">
+          <div>동작 확인된 메일</div>
+          <div>- https://mail.google.com/ (@gmail.com)</div>
+          <div>- https://mail.naver.com/ (@naver.com)</div>
+          <div>- https://portal.koreatech.ac.kr/ (@koreatech.ac.kr)</div>
+          <div class="info-note">다른 사이트는 ehddn2004@gmail.com 으로 알려주세요.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toggle-row">
+    <span>활성화</span>
+    <label class="switch">
+      <input type="checkbox" id="toggle" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div id="log-section" class="log-section">
+    <h2>최근 변환</h2>
+    <ul id="log-list" class="log-list"></ul>
+    <p id="log-empty" class="log-empty">변환 기록이 없습니다</p>
+  </div>
+
+  <div class="footer">
+    <span>Copyright © Woo. All rights reserved.</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
