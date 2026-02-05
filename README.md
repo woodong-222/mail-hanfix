@@ -1,4 +1,4 @@
-# Koreatech HanFix
+# Mail HanFix
 
 macOS에서 웹메일로 파일 업로드 시 한글 파일명이 자소 분리되는 현상을 자동으로 변환하는 Chrome 확장 프로그램입니다.
 
@@ -17,7 +17,7 @@ macOS의 파일시스템 API가 파일명을 NFD 형태로 반환하기 때문�
 
 ## 설치
 
-(권장) 크롬 웹스토어에서 `Koreatech HanFix` 설치
+(권장) 크롬 웹스토어에서 `Mail HanFix` 설치
 
 혹은
 

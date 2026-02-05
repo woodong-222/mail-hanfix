@@ -1,7 +1,11 @@
 (function () {
   'use strict';
 
-  var MSG_TYPE = 'koreatech-hanfix';
+  // bridge.js가 storage 상태를 window.postMessage로 전달 → enabled 갱신
+  // 업로드 경로별 훅킹(FormData/input/drop/plupload)에서 파일명 NFC 변환
+  // 변환이 발생하면 notify()로 bridge.js에 알림
+
+  var MSG_TYPE = 'mail-hanfix';
   var enabled = true;
 
   // bridge.js가 storage 상태 전달
@@ -13,10 +17,12 @@
     }
   });
 
+  // NFD 여부 판단 (NFC로 normalize 했을 때 값이 바뀌는지 확인)
   function needsNFC(str) {
     return str !== str.normalize('NFC');
   }
 
+  // File처럼 보이는지 판별 (FormData 훅에서 사용)
   function isFileLike(value) {
     return !!value
       && typeof value === 'object'
@@ -25,6 +31,7 @@
       && typeof value.type === 'string';
   }
 
+  // 변환 이벤트 알림 (bridge.js가 받으면 background로 전달)
   function notify(original, normalized) {
     try {
       window.postMessage({
@@ -36,6 +43,7 @@
     } catch (_) {}
   }
 
+  // File 객체를 NFC 이름으로 재생성 (변환 시 notify 호출)
   function normalizeFile(file, explicitName) {
     var name = explicitName != null ? explicitName : file.name;
     var nfc = name.normalize('NFC');
@@ -52,12 +60,14 @@
 
   var pluploadHooked = false;
 
+  // 문자열을 NFC로 정규화 (변환 필요 없으면 그대로 반환)
   function normalizeString(value) {
     if (typeof value !== 'string') return value;
     if (!needsNFC(value)) return value;
     return value.normalize('NFC');
   }
 
+  // 파일명 문자열을 NFC로 정규화 및 변환 알림
   function normalizeFilename(value) {
     if (typeof value !== 'string') return value;
     if (!needsNFC(value)) return value;
@@ -66,6 +76,7 @@
     return nfc;
   }
 
+  // plupload multipart_params 안의 문자열도 NFC로 교정
   function normalizeMultipartParams(params) {
     if (!params) return;
     Object.keys(params).forEach(function (key) {
@@ -76,6 +87,7 @@
     });
   }
 
+  // plupload를 쓰는 사이트 대응 (Uploader.prototype 후킹) ex) koreatech.ac.kr
   function hookPlupload() {
     if (pluploadHooked) return;
     if (!window.plupload || !window.plupload.Uploader) return;
@@ -83,6 +95,7 @@
     pluploadHooked = true;
     var origAddFile = window.plupload.Uploader.prototype.addFile;
     if (typeof origAddFile === 'function') {
+      // addFile 시점에 파일명 보정
       window.plupload.Uploader.prototype.addFile = function (file, fileName) {
         var overrideName = fileName;
         if (enabled) {
@@ -102,6 +115,7 @@
     }
 
     var origInit = window.plupload.Uploader.prototype.init;
+    // init 시점에 이벤트 바인딩 (FilesAdded / BeforeUpload)
     window.plupload.Uploader.prototype.init = function () {
       this.bind('FilesAdded', function (up, files) {
         if (!enabled) return;
@@ -127,6 +141,7 @@
   }
 
   (function watchPlupload() {
+    // plupload가 늦게 로드되는 페이지 대응 (최대 200회 재시도)
     var tries = 0;
     var timer = setInterval(function () {
       tries++;
@@ -138,6 +153,7 @@
   })();
 
   // -- FormData.prototype.append --
+  // 페이지 코드가 FormData.append를 호출할 때 가로채서 파일명 보정
   var origAppend = FormData.prototype.append;
   FormData.prototype.append = function (name, value, filename) {
     if (enabled && isFileLike(value)) {
@@ -153,6 +169,8 @@
       : origAppend.call(this, name, value);
   };
 
+  // -- FormData.prototype.set --
+  // append와 동일한 로직으로 파일명 보정
   var origSet = FormData.prototype.set;
   FormData.prototype.set = function (name, value, filename) {
     if (enabled && isFileLike(value)) {
@@ -168,6 +186,7 @@
       : origSet.call(this, name, value);
   };
 
+  // input[type=file] 변경 감지 → FileList 재구성(DataTransfer)
   document.addEventListener('change', function (e) {
     if (!enabled) return;
     var input = e.target;
@@ -188,6 +207,7 @@
     input.files = dt.files;
   }, true);
 
+  // 드래그&드롭 업로드 감지 → dataTransfer 재구성
   document.addEventListener('drop', function (e) {
     if (!enabled) return;
     if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
