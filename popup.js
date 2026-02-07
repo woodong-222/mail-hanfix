@@ -51,7 +51,7 @@ function render(state) {
 
     var site = document.createElement('span');
     site.className = 'log-site';
-    site.textContent = entry.site || '';
+    site.textContent = (entry.kind === 'download' ? '[다운로드]' : '[업로드]') + (entry.site ? ' ' + entry.site : '');
 
     var orig = document.createElement('span');
     orig.className = 'log-original';

@@ -36,6 +36,7 @@ window.addEventListener('message', function (event) {
   try {
     chrome.runtime.sendMessage({
       action: 'normalized',
+      kind: event.data.kind,
       original: event.data.original,
       normalized: event.data.normalized
     });
