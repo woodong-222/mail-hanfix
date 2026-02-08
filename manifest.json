@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mail HanFix - 파일명 한글 자소 변환",
   "short_name": "Mail HanFix",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MAC OS에서 파일 업로드할 경우 한글 파일명의 자소 분리를 병합합니다.",
   "permissions": ["storage", "downloads"],
   "action": {
